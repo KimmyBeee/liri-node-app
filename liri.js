@@ -14,3 +14,10 @@ var spotifyKeys = require("./keys.js");
 
 var spotifyID = spotifyKeys.client_id;
 var spotifySecret= spotifyKeys.client_secret;
+
+var command = process.argv[2];
+var mediaInput = process.argv[3];
+
+if (command === "my-tweets") 	{
+	
+}
