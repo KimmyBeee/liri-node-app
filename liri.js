@@ -1,7 +1,7 @@
 var fs = require("fs");
 var request = require("request");
 var Twitter = require("twitter");
-var spotify = require("node-spotify-api");
+var Spotify = require("node-spotify-api");
 
 var key = require("./keys.js");
 
@@ -10,31 +10,30 @@ var twitterConSecret = key.twitterKeys.consumer_secret;
 var twitterAccTokKey = key.twitterKeys.access_token_key;
 var twitterAccTokSecret = key.twitterKeys.access_token_secret;
 
-// var spotifyKeys = require("./keys.js");
-
 var spotifyId = key.spotifyKeys.client_id;
-var spotifySecret= key.spotifyKeys.client_secret;
+var spotifySecret = key.spotifyKeys.client_secret;
+
 
 var command = process.argv[2];
 var mediaInput = process.argv;
 
 var mediaTitle = "";
- for (var m = 3; m < mediaInput.length; m++)	{
- 	mediaTitle = mediaTitle + " " mediaInput[m];
- }
 
+ for (var m = 3; m < mediaInput.length; m++)	{
+ 	mediaTitle = mediaTitle + " " + mediaInput[m];
+ 	console.log(mediaTitle);
+ }
 
 if (command === "my-tweets")  	{
 	getTweets()
-};
 
-} else if (command === "spotify-this-song")	{
+} else if (command === "spotify-this-song")	{	
 	spotifySong()
-};
 
-// else if (command === "movie-this")	{
-
-// } else if (command === "do-what-it-says")	{
+} else if (command === "movie-this")	{
+	getMovie()
+}
+//else if (command === "do-what-it-says")	{
 
 // };
 
@@ -71,11 +70,10 @@ function spotifySong()	{
   		secret: spotifySecret
 	});
  
-	spotify.search({type: "track", query: mediaInput, limit: 3}, function(err, data) {
+	spotify.search({type: "track", query: mediaTitle, limit: 3}, function(err, data) {
   		if (err) {
     		return console.log("Error occurred: " + err);
   		}
- 
 		console.log(data); 
 	}); 
 

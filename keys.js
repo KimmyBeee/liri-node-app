@@ -9,8 +9,8 @@ var twitterKeys = {
 }
 
 var spotifyKeys = {
-	client_iD: "36715725ede742b69394771e7af7dd83",
-	client_secret: "a223a84e420b4968b2a1b140fa70d76a"
+	client_id: '36715725ede742b69394771e7af7dd83',
+	client_secret: 'a223a84e420b4968b2a1b140fa70d76a'
 }
 
 module.exports = {
