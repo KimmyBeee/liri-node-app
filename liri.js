@@ -24,6 +24,7 @@ var mediaTitle = "";
  }
 
 console.log(mediaTitle);
+
 if (command === "my-tweets")  	{
 	getTweets()
 
@@ -70,10 +71,11 @@ function spotifySong()	{
   		secret: spotifySecret
 	});
  
-	spotify.search({type: "track", query: mediaTitle, limit: 1}, function(err, data) {
+	spotify.search({type: "track", query: mediaTitle}, function(err, data) {
   		if (err) {
     		return console.log("Error occurred: " + err);
   		}
+
   		var trackPath = data.tracks.items[0];
   		
   		console.log("*******");
@@ -82,11 +84,18 @@ function spotifySong()	{
 		console.log("Here is a Spotify preview link: " + trackPath.preview_url);
 		console.log("The album title is " + trackPath.album.name)
 		console.log("*******");
-
-		
-
 	}); 
-
+	if (mediaTitle === null)	{
+		var trackPath = data.tracks.items[5];
+  		
+  		console.log("*******");
+		console.log("The artist of this song is " + trackPath.artists[0].name);
+		console.log("The name of this song is " + trackPath.name);
+		console.log("Here is a Spotify preview link: " + trackPath.preview_url);
+		console.log("The album title is " + trackPath.album.name)
+		console.log("*******");
+	};
+	}
 }
 
 
