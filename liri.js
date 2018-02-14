@@ -27,11 +27,6 @@ var mediaTitle = "";
 
 console.log(mediaTitle);
 
-// if (mediaTitle === undefined)	{
-// 	noSong();
-// };
-
-
 if (command === "my-tweets")  	{
 	fs.appendFile("log.txt", "\n========My-Tweets=======", function(error)	{
     	if (error)	{
@@ -93,11 +88,17 @@ function spotifySong()	{
   		secret: spotifySecret
 	});
 
+	var index = 0;
+
+	if (mediaTitle === "")	{
+		mediaTitle = "the sign";
+	}
+
 	spotify.search({type: "track", query: mediaTitle, limit: 1}, function(err, data) {
   		if (err) {
     		return console.log("Error occurred: " + err);
   		}
-
+  		console.log(data);
   		var trackPath = data.tracks.items[0];
   		
   		console.log("*******");
@@ -115,29 +116,6 @@ function spotifySong()	{
 	}); 		
 }
 
-// function noSong()	{
-// 	mediaTitle = "the sign";
-
-// 	var spotify = new Spotify({
-//   		id: spotifyId,
-//   		secret: spotifySecret
-// 	});
-
-// 	spotify.search({type: "track", query: mediaTitle, limit: 5}, function(err, data) {
-//   		if (err) {
-//     		return console.log("Error occurred: " + err);
-//   		}
-
-//   		var trackPath = data.tracks.items[5];
-  		
-//   		console.log("*******");
-// 		console.log("The artist of this song is " + trackPath.artists[0].name);
-// 		console.log("The name of this song is " + trackPath.name);
-// 		console.log("Here is a Spotify preview link: " + trackPath.preview_url);
-// 		console.log("The album title is " + trackPath.album.name)
-// 		console.log("*******");
-// 	});
-// }
 
 function getMovie()	{
 	var movieTitle = mediaTitle;
