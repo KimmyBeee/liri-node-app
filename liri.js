@@ -13,6 +13,8 @@ var twitterAccTokSecret = key.twitterKeys.access_token_secret;
 var spotifyId = key.spotifyKeys.client_id;
 var spotifySecret = key.spotifyKeys.client_secret;
 
+var omdbApi = key.movieKey.api_key;
+
 
 var command = process.argv[2];
 var mediaInput = process.argv;
@@ -25,18 +27,38 @@ var mediaTitle = "";
 
 console.log(mediaTitle);
 
+// if (mediaTitle === undefined)	{
+// 	noSong();
+// };
+
+
 if (command === "my-tweets")  	{
+	fs.appendFile("log.txt", "\n========My-Tweets=======", function(error)	{
+    	if (error)	{
+    		console.log(error)
+  		}
+  	});	
 	getTweets()
 
-} else if (command === "spotify-this-song")	{	
+} else if (command === "spotify-this-song")	{
+	fs.appendFile("log.txt", "\n=======Spotify-This-Song=======", function(error)	{
+    	if (error)	{
+    		console.log(error)
+  		}
+  	});		
 	spotifySong()
-}
-// } else if (command === "movie-this")	{
-	// getMovie()
-// }
-//else if (command === "do-what-it-says")	{
 
-// };
+} else if (command === "movie-this")	{
+	fs.appendFile("log.txt", "\n========Movie-This=======", function(error)	{
+    	if (error)	{
+    		console.log(error)
+  		}
+  	});	
+	getMovie()
+
+} else if (command === "do-what-it-says")	{
+
+};
 
 function getTweets()	{
 	var client = new Twitter({
@@ -55,7 +77,7 @@ function getTweets()	{
   				console.log(tweets[i].created_at);
   				console.log(tweets[i].text);
 
-				fs.appendFile("log.txt", "***\n" + tweets[i].text + "\n", function(error)	{
+				fs.appendFile("log.txt", "\n***\n" + tweets[i].text, function(error)	{
     				if (error)	{
     				console.log(error)
   					}	
@@ -70,8 +92,8 @@ function spotifySong()	{
   		id: spotifyId,
   		secret: spotifySecret
 	});
- 
-	spotify.search({type: "track", query: mediaTitle}, function(err, data) {
+
+	spotify.search({type: "track", query: mediaTitle, limit: 1}, function(err, data) {
   		if (err) {
     		return console.log("Error occurred: " + err);
   		}
@@ -84,18 +106,61 @@ function spotifySong()	{
 		console.log("Here is a Spotify preview link: " + trackPath.preview_url);
 		console.log("The album title is " + trackPath.album.name)
 		console.log("*******");
-	}); 
-	if (mediaTitle === null)	{
-		var trackPath = data.tracks.items[5];
+		
+		fs.appendFile("log.txt", "\n***\n" + trackPath.artists[0].name + "\n" + trackPath.name + "\n" + trackPath.preview_url + "\n" + trackPath.album.name, function(error)	{
+    		if (error)	{
+    		console.log(error)
+  			}	
+    	});	
+	}); 		
+}
+
+// function noSong()	{
+// 	mediaTitle = "the sign";
+
+// 	var spotify = new Spotify({
+//   		id: spotifyId,
+//   		secret: spotifySecret
+// 	});
+
+// 	spotify.search({type: "track", query: mediaTitle, limit: 5}, function(err, data) {
+//   		if (err) {
+//     		return console.log("Error occurred: " + err);
+//   		}
+
+//   		var trackPath = data.tracks.items[5];
   		
-  		console.log("*******");
-		console.log("The artist of this song is " + trackPath.artists[0].name);
-		console.log("The name of this song is " + trackPath.name);
-		console.log("Here is a Spotify preview link: " + trackPath.preview_url);
-		console.log("The album title is " + trackPath.album.name)
-		console.log("*******");
-	};
-	}
+//   		console.log("*******");
+// 		console.log("The artist of this song is " + trackPath.artists[0].name);
+// 		console.log("The name of this song is " + trackPath.name);
+// 		console.log("Here is a Spotify preview link: " + trackPath.preview_url);
+// 		console.log("The album title is " + trackPath.album.name)
+// 		console.log("*******");
+// 	});
+// }
+
+function getMovie()	{
+	var movieTitle = mediaTitle;
+
+	request("http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
+		if (!error && response.statusCode === 200)	{
+			// console.log(JSON.parse(response.body));
+			console.log("This movie's title is " + JSON.parse(body).Title);
+			console.log("It was released in " + JSON.parse(body).Year);
+			console.log("The movie's IMDB rating is " + JSON.parse(body).imdbRating);
+			console.log("The Rotten Tomatoes rating is " + JSON.parse(body).Ratings[1].Value);
+			console.log("It was produced in " + JSON.parse(body).Country);
+			console.log("The original release language was " + JSON.parse(body).Language);
+			console.log("The plot of this movie goes something like this: " + JSON.parse(body).Plot);
+			console.log("This film stars " + JSON.parse(body).Actors);
+    	};
+		
+		fs.appendFile("log.txt", "\n***\n" + JSON.parse(body).Title + "\n" + JSON.parse(body).Year + "\n" + JSON.parse(body).imdbRating + "\n" + JSON.parse(body).Ratings[1].Value + "\n" + JSON.parse(body).Country + "\n" + JSON.parse(body).Language + "\n" + JSON.parse(body).Plot + "\n" + JSON.parse(body).Actors, function(error)	{
+    		if (error)	{
+    		console.log(error)
+  			}	
+    	});	
+	});
 }
 
 

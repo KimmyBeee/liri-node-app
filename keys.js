@@ -11,7 +11,12 @@ var spotifyKeys = {
 	client_secret: 'a223a84e420b4968b2a1b140fa70d76a'
 }
 
+var movieKey = 	{
+	api_key: "apikey=40e9cece"
+}
+
 module.exports = {
 	twitterKeys: twitterKeys,
-	spotifyKeys: spotifyKeys
+	spotifyKeys: spotifyKeys,
+	movieKey: movieKey
 }
