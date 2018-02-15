@@ -52,7 +52,12 @@ if (command === "my-tweets")  	{
 	getMovie()
 
 } else if (command === "do-what-it-says")	{
-
+	fs.appendFile("log.txt", "\n========Do-What-It-Says=======", function(error)	{
+    	if (error)	{
+    		console.log(error)
+  		}
+  	});	
+	thatWay();
 };
 
 function getTweets()	{
@@ -88,8 +93,6 @@ function spotifySong()	{
   		secret: spotifySecret
 	});
 
-	var index = 0;
-
 	if (mediaTitle === "")	{
 		mediaTitle = "the sign";
 	}
@@ -120,24 +123,49 @@ function spotifySong()	{
 function getMovie()	{
 	var movieTitle = mediaTitle;
 
+	if (movieTitle === "")	{
+		movieTitle = "kung fu hustle";
+	}
+
 	request("http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
-		if (!error && response.statusCode === 200)	{
-			// console.log(JSON.parse(response.body));
+		console.log(JSON.parse(body).Response);
+		if (!error && response.statusCode === 200 && JSON.parse(body).Response === "True")	{
+			
 			console.log("This movie's title is " + JSON.parse(body).Title);
 			console.log("It was released in " + JSON.parse(body).Year);
 			console.log("The movie's IMDB rating is " + JSON.parse(body).imdbRating);
-			console.log("The Rotten Tomatoes rating is " + JSON.parse(body).Ratings[1].Value);
+
+			if (JSON.parse(body).Ratings[1])	{
+				console.log("The Rotten Tomatoes rating is " + JSON.parse(body).Ratings[1].Value);
+			}
 			console.log("It was produced in " + JSON.parse(body).Country);
 			console.log("The original release language was " + JSON.parse(body).Language);
 			console.log("The plot of this movie goes something like this: " + JSON.parse(body).Plot);
 			console.log("This film stars " + JSON.parse(body).Actors);
-    	};
-		
-		fs.appendFile("log.txt", "\n***\n" + JSON.parse(body).Title + "\n" + JSON.parse(body).Year + "\n" + JSON.parse(body).imdbRating + "\n" + JSON.parse(body).Ratings[1].Value + "\n" + JSON.parse(body).Country + "\n" + JSON.parse(body).Language + "\n" + JSON.parse(body).Plot + "\n" + JSON.parse(body).Actors, function(error)	{
-    		if (error)	{
-    		console.log(error)
-  			}	
-    	});	
+
+			fs.appendFile("log.txt", "\n***\n" + JSON.parse(body).Title + "\n" + JSON.parse(body).Year + "\n" + JSON.parse(body).imdbRating + "\n" + (response.Response === "True" ? JSON.parse(body).Ratings[1].Value : "") + JSON.parse(body).Country + "\n" + JSON.parse(body).Language + "\n" + JSON.parse(body).Plot + "\n" + JSON.parse(body).Actors, function(error)	{
+    			if (error)	{
+    			console.log(error)
+  				}	
+    		});	
+    	} else {
+    		console.log("Movie not found.");
+    	}
+	});
+}
+
+function thatWay()	{
+	
+	fs.readFile("./random.txt", "utf8", function read(error, data) {
+    	if (error) {
+        console.log(error);
+    	}
+	
+	var info = data.split(",");
+
+	mediaTitle = info[1];
+	
+	spotifySong();
 	});
 }
 
